@@ -1,0 +1,88 @@
+class Solution {
+    static TreeMap<Integer,Integer>[] map;
+    static ArrayList<Integer> removePrefixes;
+    static class TrieNode {
+        TrieNode[] child;
+        int prefixCount;
+        TrieNode() {
+            child = new TrieNode[26];
+            prefixCount = 0;
+        }
+    }
+    static void insertOnTries(String str,TrieNode root,int k) {
+        TrieNode curr = root;
+        int longestPrefix = 0;
+        boolean breaker = false;
+        int key = str.charAt(0) - 'a';
+        if(k == 1) {
+            map[key].put(str.length(),map[key].getOrDefault(str.length(), 0) + 1);
+            breaker = true;
+        }
+        for(char ch : str.toCharArray()) {
+            int idx = ch - 'a';
+            if(curr.child[idx] != null && curr.child[idx].prefixCount + 1 >= k && !breaker) {
+                longestPrefix++;
+                map[key].put(longestPrefix,map[key].getOrDefault(longestPrefix, 0) + 1);
+            }
+            if(curr.child[idx] == null) {curr.child[idx] = new TrieNode();}
+            curr = curr.child[idx];
+            curr.prefixCount++;
+        }
+    }
+    static void removeStr(String str,TrieNode root,int k) {
+        int key = str.charAt(0) - 'a';
+        if(k == 1) {
+            int len = str.length();
+            map[key].put(len, map[key].get(len) - 1);
+            if(map[key].get(len) == 0) {
+                map[key].remove(len);
+            }
+            removePrefixes.add(len);
+            return;
+        }
+        TrieNode curr = root;
+        int longestPrefix = 0;
+        for(char ch : str.toCharArray()) {
+            int idx = ch - 'a';
+            if(curr.child[idx].prefixCount >= k) {
+                longestPrefix++;
+                removePrefixes.add(longestPrefix);
+                map[key].put(longestPrefix,map[key].get(longestPrefix) - 1);
+                if(map[key].get(longestPrefix) == 0) {
+                    map[key].remove(longestPrefix);
+                }
+            }
+            curr = curr.child[idx];
+        }
+    }
+    static int longestPrefix(String str) {
+        int ans = 0;
+        int key = str.charAt(0) - 'a';
+        for(int i = 0;i < 26;i++) {
+            if(!map[i].isEmpty()) {
+                int maxPrefix = map[i].lastKey();
+                ans = Math.max(ans, maxPrefix);
+            }
+        }
+        for(int prefix : removePrefixes) {
+            map[key].put(prefix,map[key].getOrDefault(prefix,0) + 1);
+        }
+        removePrefixes = new ArrayList<>();
+        return ans;
+    }
+    public int[] longestCommonPrefix(String[] arr, int k) {
+        TrieNode root = new TrieNode();
+        map = new TreeMap[26];
+        removePrefixes = new ArrayList<>();
+        for(int i = 0;i < 26;i++) {map[i] = new TreeMap<>();}
+        for(String str : arr) {
+            insertOnTries(str, root, k);
+        }
+        int ans[] = new int[arr.length];
+        for(int i = 0;i < arr.length;i++) {
+            removeStr(arr[i], root, k);
+            ans[i] = longestPrefix(arr[i]);
+        }
+        return ans;
+    }
+}
