@@ -1,0 +1,42 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private int n;
+    private int[][][] dp;
+    static int GCD(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    public int subsequencePairCount(int[] nums) {
+        n = nums.length;
+        dp = new int[nums.length + 1][201][201];
+        for(int i = 0;i <= n;i++) {
+            for(int j = 0;j < 201;j++) {
+                Arrays.fill(dp[i][j],-1);
+            }
+        }
+        return solve(nums,0,0,0);
+    }
+    private int solve(int arr[],int a,int b,int idx)  {
+        if(idx == n) {
+            if(a != 0 && b != 0 && a == b) {
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        if(dp[idx][a][b] != -1) {
+            return dp[idx][a][b];
+        }
+        long ans = 0;
+        ans = solve(arr,a,b,idx + 1) % MOD;
+        int g1 = a == 0 ? arr[idx] : GCD(a,arr[idx]);
+        int g2 = b == 0 ? arr[idx] : GCD(b,arr[idx]);
+        ans = (ans + solve(arr,g1,b,idx + 1) % MOD) % MOD;
+        ans = (ans + solve(arr,a,g2,idx + 1) % MOD) % MOD;
+        return dp[idx][a][b] = (int)ans;
+    }
+}
