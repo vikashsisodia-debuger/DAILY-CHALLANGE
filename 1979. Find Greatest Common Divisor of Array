@@ -1,0 +1,15 @@
+class Solution {
+    public static int getGDC(int a, int b) {
+        while(b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    public int findGCD(int[] nums) {
+        int max = Arrays.stream(nums).max().getAsInt();
+        int min = Arrays.stream(nums).min().getAsInt();
+        return getGDC(max,min);
+    }
+}
