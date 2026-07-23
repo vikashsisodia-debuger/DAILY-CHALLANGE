@@ -1,0 +1,41 @@
+class Solution {
+    public int longestStrChain(String[] words) {
+        Arrays.sort(words,(a,b) -> a.length() - b.length());
+        int n = words.length;
+        int dp[] = new int[n];
+        Arrays.fill(dp,1);
+        int maxLen = 1;
+        for(int i = 1;i < n;i++) {
+            for(int j = i - 1;j >= 0;j--) {
+                if(predecessor(words[i],words[j])) {
+                    dp[i] = Math.max(dp[i],dp[j] + 1);
+                }
+            }
+            maxLen = Math.max(maxLen,dp[i]);
+        }
+        System.out.print(Arrays.toString(words));
+        return maxLen;
+    }
+    static boolean predecessor(String a,String b) {
+        int i = 0,j = 0;
+        int lenA = a.length(),lenB = b.length();
+        if(Math.abs(lenA - lenB) != 1) {return false;}
+        boolean onChance = true;
+        while(i < lenA && j < lenB) {
+            if(a.charAt(i) == b.charAt(j)) {
+                i++;
+                j++;
+            }else{
+                if(!onChance) {return false;}
+                if(lenA < lenB) {
+                    j++;
+                    onChance = false;
+                }else{
+                    i++;
+                    onChance = false;
+                }
+            }
+        }
+        return true;
+    }
+}
