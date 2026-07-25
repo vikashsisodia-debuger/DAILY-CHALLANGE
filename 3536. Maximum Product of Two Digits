@@ -1,0 +1,16 @@
+class Solution {
+    public int maxProduct(int n) {
+        char arr[] = Integer.toString(n).toCharArray();
+        int a = 0,b = 0;
+        for(char ch : arr) {
+            int num = ch - '0';
+            if(num > a) {
+                b = a;
+                a = num;
+            }else if(num > b) {
+                b = num;
+            }
+        }
+        return a * b;
+    }
+}
