@@ -1,0 +1,48 @@
+class Solution {
+    public String smallestPalindrome(String s) {
+        HashMap<Character,Integer> map = new HashMap<>();
+        for(char ch : s.toCharArray()) {
+            map.put(ch,map.getOrDefault(ch,0) + 1);
+        }
+        PriorityQueue<Character> PQ = new PriorityQueue<>();
+        for(char key : map.keySet()) {PQ.add(key);}
+        StringBuilder sb = new StringBuilder();
+        String middle = "";
+        while(!PQ.isEmpty()) {
+            char ch = PQ.poll();
+            // check for Even Cases
+            if(map.get(ch) % 2 == 0) {
+                int freq = map.get(ch) / 2;
+                for(int i = 0;i < freq;i++) {
+                    sb.append(ch);
+                }
+            }else{
+                // Odd he But Signal Toh Sahane Do
+                if(map.get(ch) == 1) {
+                    middle += ch;
+                }else{
+                    // Odd He But 1 se jyada then
+                    int freq = (map.get(ch) - 1) / 2;
+                    middle += ch;
+                    for(int i = 0;i < freq;i++) {
+                        sb.append(ch);
+                    }
+                }
+            }
+        }
+        String ans = sb.toString() + middle + rev(sb.toString());
+        return ans;
+    }
+    static String rev(String str) {
+        char arr[] = str.toCharArray();
+        int left = 0,right = arr.length - 1;
+        while(left < right) {
+            char t = arr[left];
+            arr[left] = arr[right];
+            arr[right] = t;
+            left++;
+            right--;
+        }
+        return new String(arr);
+    }
+}
