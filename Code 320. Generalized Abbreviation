@@ -1,0 +1,23 @@
+class Solution {
+    static int n;
+    static List<String> list;
+    public List<String> generateAbbreviations(String word) {
+        list = new ArrayList<>();
+        n = word.length();
+        solve(word,"",0);
+        return list;
+    }
+    static void solve(String str,String ans,int idx) {
+        if(idx >= n) {
+            list.add(ans);
+            return;
+        }
+        solve(str, ans + str.charAt(idx), idx + 1);
+        for(int i = idx;i < n;i++) {
+            int len = (i - idx) + 1;
+            String newString = ans + "" + len;
+            if(i + 1 < n) {newString = newString + str.charAt(i + 1);}
+            solve(str,newString,i + 2);
+        }
+    }
+}
