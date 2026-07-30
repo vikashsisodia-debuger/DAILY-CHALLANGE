@@ -1,0 +1,13 @@
+class Solution {
+    public int minimumPushes(String word) {
+        int press = 1;
+        int limit = 0;
+        int ans = 0;
+        for(char ch : word.toCharArray()) {
+            ans += press;
+            limit++;
+            if(limit % 8 == 0) {press++;}
+        }
+        return ans;
+    }
+}
