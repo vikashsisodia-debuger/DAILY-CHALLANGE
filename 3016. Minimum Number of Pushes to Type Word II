@@ -1,0 +1,21 @@
+class Solution {
+    public int minimumPushes(String word) {
+        HashMap<Character,Integer> freq = new HashMap<>();
+        for(int i = 0;i < word.length();i++) {
+            char ch = word.charAt(i);
+            freq.put(ch,freq.getOrDefault(ch,0) + 1);
+        }
+        PriorityQueue<Character> PQ = new PriorityQueue<>((a,b) -> freq.get(b) - freq.get(a));
+        for(char key : freq.keySet()) {PQ.add(key);}
+        int ans = 0;
+        int currPress = 1;
+        int totalChars = 0;
+        while(!PQ.isEmpty()) {
+            char ch = PQ.poll();
+            totalChars += 1;
+            ans += (currPress * freq.get(ch));
+            if(totalChars % 8 == 0) {currPress += 1;}
+        }
+        return ans;
+    }
+}
