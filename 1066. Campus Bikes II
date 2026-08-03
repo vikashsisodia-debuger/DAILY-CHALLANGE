@@ -1,0 +1,28 @@
+class Solution {
+    static int target;
+    static long[] dp;
+    public int assignBikes(int[][] workers, int[][] bikes) {
+        int n = bikes.length;
+        target = (1 << n) - 1;
+        dp = new long[1 << n];
+        Arrays.fill(dp,-1);
+        return (int)solve(workers,bikes,0,0);
+    }
+    static long solve(int workers[][],int bikes[][],int idx,int mask) {
+        if(idx >= workers.length) {return 0;}
+        if(dp[mask] != -1) {return dp[mask];}
+        long ans = Integer.MAX_VALUE;
+        for(int i = 0;i < bikes.length;i++) {
+            if((mask & (1 << i)) > 0) {continue;}
+            int newMask = mask | (1 << i);
+            long x1 = workers[idx][0];
+            long y1 = workers[idx][1];
+            long x2 = bikes[i][0];
+            long y2 = bikes[i][1];
+            long dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+            long cost = dist + solve(workers,bikes,idx + 1,newMask);
+            ans = Math.min(ans,cost);
+        }
+        return dp[mask] = ans;
+    }
+}
