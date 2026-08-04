@@ -1,0 +1,67 @@
+class Solution {
+    static int trySum;
+    static char[] arr;
+    static int n;
+    static int[][][][] dp;
+    public int beautifulNumbers(int l, int r) {
+        dp = new int[11][2][81][82];
+        int fullRange = solve(r);
+        int halfRange = solve(l);
+        int ans = fullRange - halfRange;
+        if(validMiddle(l)) {ans++;}
+        return ans;
+    }
+    static boolean validMiddle(int num) {
+        long product = 1;
+        long sum = 0;
+        for(char ch : Integer.toString(num).toCharArray()) {
+            long digit = ch - '0';
+            product *= digit;
+            sum += digit;
+        }
+        return product % sum == 0;
+    }
+    static int solve(int num) {
+        arr = Integer.toString(num).toCharArray();
+        n = arr.length;
+        int ans = 0;
+        int target = 9 * arr.length;
+        for(int i = 1;i <= target;i++) {
+            trySum = i;
+            fillDP(i);
+            ans += solve(0,1,0,1 % trySum,0);
+        }
+        return ans;
+    }
+    static void fillDP(int rem) {
+        for(int i = 0;i < 11;i++) {
+            for(int j = 0;j < 2;j++) {
+                for(int k = 0;k < 81;k++) {
+                    Arrays.fill(dp[i][j][k],-1);
+                }
+            }
+        }
+    }
+    static int solve(int pos,int tight,int started,int rem,int sum) {
+        if(sum > trySum) {return 0;}
+        if(pos == n) {return sum == trySum && rem == 0 ? 1 : 0;}
+        if(tight == 0 && dp[pos][started][rem][sum] != -1) {
+            return dp[pos][started][rem][sum];
+        }
+        int limit = tight == 1 ? arr[pos] - '0' : 9;
+        int ans = 0;
+        for(int digit = 0;digit <= limit;digit++) {
+            int newTight = (tight == 1 && digit == arr[pos] - '0') ? 1 : 0;
+            // Zero Case 
+            if(digit == 0 && started == 0) {
+                ans += solve(pos + 1,newTight,started,rem,sum);
+            }else{
+                ans += solve(pos + 1,newTight,1,rem * (digit % trySum) % trySum,sum + digit);
+            }
+        }
+        if(tight == 0) {
+            dp[pos][started][rem][sum] = ans;
+        }
+        return ans;
+    }
+}
