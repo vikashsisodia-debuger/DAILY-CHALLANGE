@@ -1,0 +1,28 @@
+class Solution {
+    static Integer[][] dp;
+    static int prefix[];
+    public int stoneGameII(int[] arr) {
+        int n = arr.length;
+        prefix = new int[n + 1];
+        dp = new Integer[n][n];
+        for(int i = 0;i < n;i++) {
+            prefix[i + 1] = prefix[i] + arr[i];
+        }
+        return solve(arr,0,1,n);
+    }
+    static int solve(int arr[],int idx,int m,int n) {
+        if(idx == n - 1) {return arr[idx];}
+        if(idx >= n) {return 0;}
+        if(dp[idx][m] != null) {
+            return dp[idx][m];
+        }
+        int ans = Integer.MIN_VALUE;
+        int limit = Math.min(n,idx + (m * 2));
+        for(int i = idx;i < limit;i++) {
+            int nextCost = solve(arr,i + 1,Math.max(m,i - idx + 1),n);
+            int myCost = (prefix[n] - prefix[idx]) - nextCost;
+            ans = Math.max(ans,myCost);
+        }
+        return dp[idx][m] = ans;
+    }
+}
