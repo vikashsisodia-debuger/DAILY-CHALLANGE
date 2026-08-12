@@ -1,0 +1,40 @@
+class Solution {
+    static long[][] dp;
+    static int[] suffix;
+    public int minimumValueSum(int[] arr, int[] and) {
+        int n = arr.length;
+        int m = and.length;
+        dp = new long[n][m + 1];
+        for(int i = 0;i < n;i++) {Arrays.fill(dp[i],-1);}
+        suffix = new int[n];
+        suffix[n - 1] = arr[n - 1];
+        for(int i = n - 2;i >= 0;i--) {
+            suffix[i] = arr[i] & suffix[i + 1];
+        }
+        long ans = solve(arr, and, 0, m,n);
+        return ans == Integer.MAX_VALUE ? -1 : (int)ans;
+    }
+    static long solve(int arr[],int and[],int idx,int k,int n) {
+        if(idx == arr.length) {return 0;}
+        if(dp[idx][k] != -1) return dp[idx][k];
+        if(k == 1) {
+            int ad = suffix[idx];
+            if(ad == and[and.length - k]) {
+                return arr[n - 1];
+            }
+            return Integer.MAX_VALUE;
+        }
+        long ans = Integer.MAX_VALUE;
+        int ad = -1;
+        int target = and[and.length - k];
+        for(int i = idx;i <= n - k;i++) {
+            ad = ad & arr[i];
+            if((ad & target) != target) {break;}
+            if(ad == target) {
+                long temp = arr[i] + solve(arr, and, i + 1, k - 1,n);
+                ans = Math.min(ans, temp);
+            }
+        }
+        return dp[idx][k] = ans;
+    }
+}
