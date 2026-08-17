@@ -1,0 +1,38 @@
+class Solution {
+    static int[] prefix;
+    static Integer[][] dp;
+    static int[] arr;
+    public int stoneGameV(int[] stoneValue) {
+        arr = stoneValue.clone();
+        int n = arr.length;
+        prefix = new int[n + 1];
+        dp = new Integer[n][n];
+        for(int i = 0;i < n;i++) {
+            prefix[i + 1] = prefix[i] + arr[i];
+        }
+        return solve(0,n - 1);
+    }
+    static int solve(int left,int right) {
+        if(left >= right) {return 0;}
+        int ans = Integer.MIN_VALUE;
+        if(dp[left][right] != null) {
+            return dp[left][right];
+        }
+        for(int i = left;i <= right;i++) {
+            int leftSum = prefix[i + 1] - prefix[left];
+            int rightSum = prefix[right + 1] - prefix[i + 1];
+            int temp = 0;
+            if(leftSum < rightSum) {
+                temp = leftSum + solve(left,i);
+                ans = Math.max(ans,temp);
+            }else if(rightSum < leftSum) {
+                temp = rightSum + solve(i + 1,right);
+                ans = Math.max(ans,temp);
+            }else{
+                temp = leftSum + Math.max(solve(left,i),solve(i +1 ,right));
+                ans = Math.max(ans,temp);
+            }
+        }
+        return dp[left][right] = ans;
+    }
+}
