@@ -1,0 +1,37 @@
+class Solution {
+    static int UNF = Integer.MIN_VALUE;
+    public double maxProbability(int n, int[][] edges, double[] weight, int start, int end) {
+        List<List<Double[]>> graph = new ArrayList<>();
+        for(int i = 0;i < n;i++) {
+            graph.add(new ArrayList<>());
+        }
+        int idx = 0;
+        for(int edge[] : edges) {
+            double u = edge[0];
+            double v = edge[1];
+            double d = weight[idx++];
+            graph.get((int)u).add(new Double[]{v,d});
+            graph.get((int)v).add(new Double[]{u,d});
+        }
+        double[] dist = new double[n];
+        Arrays.fill(dist,UNF);
+        dist[start] = 1;
+        PriorityQueue<Double[]> PQ = new PriorityQueue<>((a,b) -> Double.compare(b[1],a[1]));
+        PQ.add(new Double[]{(double)start,1.0});
+        while(!PQ.isEmpty()) {
+            Double[] node = PQ.poll();
+            double u = node[0];
+            double d = node[1];
+            if(d != dist[(int)u]) {continue;}
+            for(Double edge[] : graph.get((int)u)) {
+                double v = edge[0];
+                double distance = edge[1];
+                if(d * distance > dist[(int)v]) {
+                    dist[(int)v] = d * distance;
+                    PQ.add(new Double[]{v,dist[(int)v]});
+                }
+            }
+        }
+        return dist[end] == UNF ? 0 : dist[end];
+    }
+}
