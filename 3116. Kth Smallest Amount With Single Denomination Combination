@@ -1,0 +1,38 @@
+class Solution {
+    public long findKthSmallest(int[] arr, int k) {
+        int min = Integer.MAX_VALUE;
+        for(int num : arr) {min = Math.min(min,num);}
+        long lower = min,upper = (long)min * k;
+        while(lower < upper) {
+            long mid = lower + (upper -  lower) / 2;
+            if(solve(arr,0, 1, 0, mid) >= k) {upper = mid;}
+            else lower = mid + 1;
+        }
+        return lower;
+    }
+        static long solve(int arr[],int idx,long currLCM,int size,long mid) {
+        if(idx == arr.length) {
+            if(size == 0) {return 0;}
+            else{
+                long count = mid / currLCM;
+                return size % 2 == 0 ? -count : count;
+            }
+        }
+        long skip = solve(arr, idx + 1, currLCM, size, mid);
+        long newLCM = lcm(currLCM,arr[idx]);
+        if(newLCM > mid) {return skip;}
+        long take = solve(arr, idx + 1,newLCM, size + 1, mid);
+        return take + skip;
+    }
+    static long lcm(long a,long b) {
+        return a / (gcd(a, b)) * b;
+    }
+    static long gcd(long a,long b) {
+        while(b != 0) {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
