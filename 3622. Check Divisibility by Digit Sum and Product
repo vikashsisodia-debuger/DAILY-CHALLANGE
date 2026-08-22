@@ -1,0 +1,12 @@
+class Solution {
+    public boolean checkDivisibility(int n) {
+        int sum = 0, product = 1;
+        for(char ch : Integer.toString(n).toCharArray()) {
+            int num = ch - '0';
+            sum += num;
+            product *= num;
+        }
+        if(n % (sum + product) == 0) return true;
+        return false;
+    }
+}
