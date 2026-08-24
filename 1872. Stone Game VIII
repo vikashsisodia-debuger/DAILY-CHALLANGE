@@ -1,0 +1,16 @@
+class Solution {
+    static int[] prefix;
+    static int[] dp;
+    public int stoneGameVIII(int[] arr) {
+        int n = arr.length;
+        prefix = new int[n + 1];
+        for(int i = 0;i < n;i++) {
+            prefix[i + 1] = prefix[i] + arr[i];
+        }
+        int next = prefix[n];
+        for(int i = n - 1;i >= 2;i--) {
+            next = Math.max(next,prefix[i] - next);
+        }
+        return next;
+    }
+}
