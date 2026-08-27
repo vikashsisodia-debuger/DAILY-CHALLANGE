@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    public String lexGreaterPermutation(String s, String target) {
+        int n = s.length();
+        int[] freq = new int[26];
+        for (char c : s.toCharArray()) freq[c - 'a']++;
+
+        StringBuilder result = new StringBuilder();
+
+        if (dfsBuild(0, n, freq, target, result, true)) {
+            return result.toString();
+        }
+        return "";
+    }
+
+    // backtrack with pruning
+    private boolean dfsBuild(int idx, int n, int[] freq, String target,
+                             StringBuilder result, boolean mustBeGreaterOrEqual) {
+        if (idx == n) return result.toString().compareTo(target) > 0;
+
+        int start = 0;
+        int end = 25;
+
+        for (int ch = start; ch <= end; ch++) {
+            if (freq[ch] == 0) continue;
+            char c = (char) (ch + 'a');
+
+            // skip if this char is smaller than target[idx] and we are forced to match
+            if (mustBeGreaterOrEqual && c < target.charAt(idx)) continue;
+
+            freq[ch]--;
+            result.append(c);
+
+            boolean nextConstraint = mustBeGreaterOrEqual && (c == target.charAt(idx));
+
+            if (dfsBuild(idx + 1, n, freq, target, result, nextConstraint)) {
+                return true;
+            }
+
+            // backtrack
+            result.deleteCharAt(result.length() - 1);
+            freq[ch]++;
+        }
+        return false;
+    }
+}
