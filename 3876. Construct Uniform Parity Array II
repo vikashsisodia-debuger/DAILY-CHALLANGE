@@ -1,0 +1,53 @@
+class Solution {
+    public boolean uniformArray(int[] nums1) {
+        boolean even = false;
+        boolean odd = false;
+        for(int num : nums1) {
+            if(num % 2 == 0) {
+                even = true;
+            }else{
+                odd = true;
+            }
+        }
+        if(!even || !odd) {return true;}
+        TreeMap<Integer,Integer> ODD = new TreeMap<>();
+        for(int num : nums1) {
+            if(num % 2 != 0) {
+                ODD.put(num,ODD.getOrDefault(num,0) + 1);
+            }
+        }
+        boolean tryEven = true;
+        boolean tryOdd = true;
+        for(int num : nums1) {
+            //try to make even first--;
+            if(num % 2 == 0) {
+                continue;
+            }else{
+                int first = ODD.firstKey();
+                if((num - first) >= 1) {
+                    continue;
+                }else{
+                    tryEven = false;
+                    break;
+                }
+            }
+        }
+        if(tryEven) {return true;}
+        for(int num : nums1) {
+            //try to make odd--
+            if(num % 2 != 0) {
+                continue;
+            }else{
+                int first = ODD.firstKey();
+                if((num - first) >= 1) {
+                    continue;
+                }else{
+                    tryOdd = false;
+                    break;
+                }
+            }
+        }
+        if(tryOdd) {return true;}
+        return false;
+    }
+}
