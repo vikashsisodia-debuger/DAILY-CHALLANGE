@@ -1,0 +1,28 @@
+class Solution {
+    static long count(long range,long len) {
+        int commas = 0;
+        if(len % 3 == 0) {
+            commas += (len / 3) - 1;
+        }else{
+            commas += (len / 3);
+        }
+        return range * commas;
+    }
+    public long countCommas(long n) {
+        long count = 0;
+        String str = Long.toString(n);
+        if(str.length() <= 3) {return 0;}
+        for(int i = 4;i <= str.length();i++) {
+            String one = "1" + "0".repeat(i - 1);
+            String nine = "9".repeat(i);
+            if(i == str.length()) {
+                long range = Long.parseLong(str) - Long.parseLong(one) + 1;
+                count += (count(range,i));
+            }else{
+                long range = Long.parseLong(nine) - Long.parseLong(one) + 1;
+                count += (count(range,i));
+            }
+        }
+        return count;
+    }
+}
