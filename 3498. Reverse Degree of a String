@@ -1,0 +1,15 @@
+class Solution {
+    public int reverseDegree(String s) {
+        HashMap<Character,Integer> map = new HashMap<>();
+        String str = "abcdefghijklmnopqrstuvwxyz";int size = 26;
+        for(char ch : str.toCharArray()) {
+            map.put(ch,size);size--;
+        }
+        int result = 0;
+        for(int i = 0;i < s.length();i++) {
+            int adder = i + 1;
+            result += (adder * map.get(s.charAt(i)));
+        }
+        return result;
+    }
+}
