@@ -1,0 +1,23 @@
+class Solution {
+    static int[][] dp;
+    public int maximumSum(int[] arr) {
+        int ans = Integer.MIN_VALUE;
+        int n = arr.length;
+        dp = new int[n][2];
+        for(int i = 0;i < n;i++) {Arrays.fill(dp[i],-1);}
+        for(int i = 0;i < n;i++) {
+            ans = Math.max(ans,solve(arr,i,0));
+        }
+        return ans;
+    }
+    static int solve(int arr[],int i,int isSkip) {
+        if(i == arr.length - 1) {return arr[i];}
+        if(dp[i][isSkip] != -1) {return dp[i][isSkip];}
+        int take = Math.max(arr[i],arr[i] + solve(arr, i + 1, isSkip));
+        if(isSkip == 0) {
+            int skip = solve(arr, i + 1,1);
+            take = Math.max(skip, take);
+        }
+        return dp[i][isSkip] = take;
+    }
+}
