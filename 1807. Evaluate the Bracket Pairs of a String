@@ -1,0 +1,39 @@
+class Solution {
+    int i = 0;
+    public String evaluate(String s, List<List<String>> arr) {
+        HashMap<String,String> map = new HashMap<>();
+        int n = arr.size();
+        for(int i = 0;i < n;i++) {
+            String key = arr.get(i).get(0);
+            String value = arr.get(i).get(1);
+            map.put(key,value);
+        }
+        i = 0;
+        StringBuilder sb = new StringBuilder();
+        while(i < s.length()) {
+            char ch = s.charAt(i);
+            if(ch == '(') {
+                i += 1;
+                String key = getString(s);
+                if(map.containsKey(key)) {
+                    sb.append(map.get(key));
+                }else{
+                    sb.append("?");
+                }
+                i += 1;
+            }else{
+                sb.append(ch);
+                i += 1;
+            }
+        }
+        return sb.toString();
+    }
+    String getString(String str) {
+        StringBuilder sb = new StringBuilder();
+        while(i < str.length() && str.charAt(i) != ')') {
+            sb.append(str.charAt(i));
+            i += 1;
+        }
+        return sb.toString();
+    }
+}
